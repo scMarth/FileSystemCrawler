@@ -36,6 +36,10 @@ namespace fileSystemCrawler
 
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
+                    // clear the listView
+                    listView1.Items.Clear();
+                    
+                    // visit the path that the user selected
                     visitDirectory(fbd.SelectedPath);
                 }
             }
