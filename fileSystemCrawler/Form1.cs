@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 
 namespace fileSystemCrawler
 {
@@ -87,6 +88,46 @@ namespace fileSystemCrawler
 
             // Perform the sort with these new sort options.
             this.listView1.Sort();
+        }
+
+        // change mouse cursor if user hovers over a path
+        private void listView1_MouseMove(object sender, MouseEventArgs e)
+        {
+            var hit = listView1.HitTest(e.Location);
+            if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[0]) listView1.Cursor = Cursors.Hand;
+            else listView1.Cursor = Cursors.Default;
+        }
+
+        private void listView1_MouseUp(object sender, MouseEventArgs e)
+        {
+            var hit = listView1.HitTest(e.Location);
+            if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[0])
+            {
+                var url = new Uri(hit.SubItem.Text);
+                //OpenFolder(Convert.ToString(url)); // Doesn't work on paths that look like \\etc.
+            }
+        }
+
+
+        private void OpenFolder(string folderPath)
+        {
+            if (Directory.Exists(folderPath))
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    Arguments = folderPath,
+                    FileName = "explorer.exe"
+                };
+            }else
+            {
+                MessageBox.Show(string.Format("{0} Directory does not exist!", folderPath));
+            }
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string path = listView1.SelectedItems[0].SubItems[0].Text;
+            Clipboard.SetText(path);
         }
     }
 }
