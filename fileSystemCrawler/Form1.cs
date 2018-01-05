@@ -43,7 +43,10 @@ namespace fileSystemCrawler
             {
                 textBox1.Text += file + Environment.NewLine;
                 textBox1.Text += "Date Created: " + File.GetCreationTime(file).ToString() + Environment.NewLine;
-                textBox1.Text += "Date Modified: " + File.GetLastWriteTime(file).ToString() + Environment.NewLine + Environment.NewLine;
+                textBox1.Text += "Date Created UTC: " + File.GetCreationTimeUtc(file).ToString() + Environment.NewLine;
+                textBox1.Text += "Date Modified: " + File.GetLastWriteTime(file).ToString() + Environment.NewLine;
+                textBox1.Text += "Date Modified UTC: " + File.GetLastWriteTimeUtc(file).ToString() + Environment.NewLine + Environment.NewLine; ;
+
             }
             // recurse
             foreach (string folder in folders)
