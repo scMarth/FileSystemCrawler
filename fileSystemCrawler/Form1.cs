@@ -13,9 +13,17 @@ namespace fileSystemCrawler
 {
     public partial class Form1 : Form
     {
+
+        private ListViewColumnSorter lvwColumnSorter;
+
+
         public Form1()
         {
             InitializeComponent();
+            // Create an instance of a ListView column sorter and assign it 
+            // to the ListView control.
+            lvwColumnSorter = new ListViewColumnSorter();
+            this.listView1.ListViewItemSorter = lvwColumnSorter;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -37,22 +45,48 @@ namespace fileSystemCrawler
             string[] files = Directory.GetFiles(path); // files
             string[] folders = Directory.GetDirectories(path); // folders
 
-            textBox1.Text += Environment.NewLine + "Files in " + path + Environment.NewLine + Environment.NewLine;
             // print filenames
             foreach (string file in files)
             {
-                textBox1.Text += file + Environment.NewLine;
-                textBox1.Text += "Date Created: " + File.GetCreationTime(file).ToString() + Environment.NewLine;
-                textBox1.Text += "Date Created UTC: " + File.GetCreationTimeUtc(file).ToString() + Environment.NewLine;
-                textBox1.Text += "Date Modified: " + File.GetLastWriteTime(file).ToString() + Environment.NewLine;
-                textBox1.Text += "Date Modified UTC: " + File.GetLastWriteTimeUtc(file).ToString() + Environment.NewLine + Environment.NewLine; ;
+                ListViewItem lvi = new ListViewItem(file);
+                lvi.SubItems.Add(File.GetCreationTime(file).ToString());
+                lvi.SubItems.Add(File.GetCreationTimeUtc(file).ToString());
+                lvi.SubItems.Add(File.GetLastWriteTime(file).ToString());
+                lvi.SubItems.Add(File.GetLastWriteTimeUtc(file).ToString());
 
+                listView1.Items.Add(lvi);
             }
             // recurse
             foreach (string folder in folders)
             {
                 visitDirectory(folder);
             }
+        }
+
+        private void colClick(object sender, ColumnClickEventArgs e)
+        {
+            // Determine if clicked column is already the column that is being sorted.
+            if (e.Column == lvwColumnSorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (lvwColumnSorter.Order == SortOrder.Ascending)
+                {
+                    lvwColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    lvwColumnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                lvwColumnSorter.SortColumn = e.Column;
+                lvwColumnSorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            this.listView1.Sort();
         }
     }
 }
