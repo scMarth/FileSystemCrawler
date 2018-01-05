@@ -1,0 +1,9 @@
+\\vSalSvr60\DeptPvt\GIS\vincentl\Desktop\Vincent Github\fileSystemCrawler\fileSystemCrawler\bin\x64\Release\fileSystemCrawler.exe.config
+\\vSalSvr60\DeptPvt\GIS\vincentl\Desktop\Vincent Github\fileSystemCrawler\fileSystemCrawler\bin\x64\Release\fileSystemCrawler.exe
+\\vSalSvr60\DeptPvt\GIS\vincentl\Desktop\Vincent Github\fileSystemCrawler\fileSystemCrawler\bin\x64\Release\fileSystemCrawler.pdb
+\\vSalSvr60\DeptPvt\GIS\vincentl\Desktop\Vincent Github\fileSystemCrawler\fileSystemCrawler\obj\x64\Release\fileSystemCrawler.csprojResolveAssemblyReference.cache
+\\vSalSvr60\DeptPvt\GIS\vincentl\Desktop\Vincent Github\fileSystemCrawler\fileSystemCrawler\obj\x64\Release\fileSystemCrawler.Form1.resources
+\\vSalSvr60\DeptPvt\GIS\vincentl\Desktop\Vincent Github\fileSystemCrawler\fileSystemCrawler\obj\x64\Release\fileSystemCrawler.Properties.Resources.resources
+\\vSalSvr60\DeptPvt\GIS\vincentl\Desktop\Vincent Github\fileSystemCrawler\fileSystemCrawler\obj\x64\Release\fileSystemCrawler.csproj.GenerateResource.Cache
+\\vSalSvr60\DeptPvt\GIS\vincentl\Desktop\Vincent Github\fileSystemCrawler\fileSystemCrawler\obj\x64\Release\fileSystemCrawler.exe
+\\vSalSvr60\DeptPvt\GIS\vincentl\Desktop\Vincent Github\fileSystemCrawler\fileSystemCrawler\obj\x64\Release\fileSystemCrawler.pdb
