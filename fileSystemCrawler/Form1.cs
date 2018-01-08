@@ -165,5 +165,88 @@ namespace fileSystemCrawler
                 MessageBox.Show("Error: Could not open the file's location.");
             }
         }
+
+        // the "Export to CSV" button is pressed
+        private void exportToCSV(object sender, EventArgs e)
+        {
+            // only execute if there are entries to export
+            if (listView1.Items.Count > 0)
+            {
+                // Displays SaveFileDialog so the user can save the CSV
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "CSV|*.csv";
+                sfd.Title = "Export CSV";
+                sfd.ShowDialog();
+
+                // If the file name is not an empty string, open it for saving
+                if (sfd.FileName != "")
+                {
+                    // reset and rescale the progress bar
+                    rescaleResetProgressBar();
+
+                    // show the progress bar
+                    progressBar1.Visible = true;
+
+                    // Write the header
+                    string outfile = sfd.FileName;
+                    string csvHeader = "PATH,Date Created,Date Created UTC,Date Modified,Date Modified UTC,File Size(Bytes),File Extension";
+                    csvHeader += Environment.NewLine;
+                    System.IO.File.WriteAllText(outfile, csvHeader);
+
+                    // set progress bar maximum
+                    progressBar1.Maximum = listView1.Items.Count;
+
+                    // write the file data
+                    for (int i = 0; i < listView1.Items.Count; i++) // for each entry
+                    {
+                        ListViewItem item = listView1.Items[i];
+
+                        appendToFile(outfile, item.SubItems[0].Text + ","); // PATH
+                        appendToFile(outfile, item.SubItems[1].Text + ","); // Date Created
+                        appendToFile(outfile, item.SubItems[2].Text + ","); // Date Created UTC
+                        appendToFile(outfile, item.SubItems[3].Text + ","); // Date Modified
+                        appendToFile(outfile, item.SubItems[4].Text + ","); // Date Modified UTC
+                        appendToFile(outfile, item.SubItems[5].Text + ","); // File Size(Bytes)
+                        appendToFile(outfile, item.SubItems[6].Text); // File Extension
+
+                        if (i != (listView1.Items.Count - 1)) appendToFile(outfile, Environment.NewLine);
+
+                        progressBar1.Increment(1);
+                    }
+
+                    // hide the progress bar
+                    progressBar1.Visible = false;
+                    MessageBox.Show(string.Format("Exported {0} entries.", listView1.Items.Count.ToString()));
+
+                }
+            }else
+            {
+                MessageBox.Show("Error: No entries to be written, aborting.");
+            }
+
+
+        }
+
+        private void rescaleResetProgressBar()
+        {
+            // reset the progress bar value to 0
+            progressBar1.Value = 0;
+
+            // rescale the progress bar
+            int thirds = (int)(this.Width / 3);
+            int marginTop = (int)(0.49 * this.Height);
+            progressBar1.Top = marginTop;
+            progressBar1.Left = thirds;
+            progressBar1.Width = thirds;
+        }
+
+        private void appendToFile(string filename, string str)
+        {
+            using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter(filename, true))
+            {
+                file.Write(str);
+            }
+        }
     }
 }
