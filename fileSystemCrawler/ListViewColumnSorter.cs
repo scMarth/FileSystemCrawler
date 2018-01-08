@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Windows.Forms;
+using System;
 
 /// <summary>
 /// This class is an implementation of the 'IComparer' interface.
 /// </summary>
 public class ListViewColumnSorter : IComparer
 {
+    /// <summary>
+    /// Specifies if an integer sort is to be performed
+    /// </summary>
+    public int intSort;
     /// <summary>
     /// Specifies the column to be sorted
     /// </summary>
@@ -29,6 +34,7 @@ public class ListViewColumnSorter : IComparer
 
         // Initialize the sort order to 'none'
         OrderOfSort = SortOrder.None;
+        intSort = 0;
 
         // Initialize the CaseInsensitiveComparer object
         ObjectCompare = new CaseInsensitiveComparer();
@@ -42,31 +48,66 @@ public class ListViewColumnSorter : IComparer
     /// <returns>The result of the comparison. "0" if equal, negative if 'x' is less than 'y' and positive if 'x' is greater than 'y'</returns>
     public int Compare(object x, object y)
     {
-        int compareResult;
-        ListViewItem listviewX, listviewY;
-
-        // Cast the objects to be compared to ListViewItem objects
-        listviewX = (ListViewItem)x;
-        listviewY = (ListViewItem)y;
-
-        // Compare the two items
-        compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
-
-        // Calculate correct return value based on object comparison
-        if (OrderOfSort == SortOrder.Ascending)
+        if (intSort == 0)
         {
-            // Ascending sort is selected, return normal result of compare operation
-            return compareResult;
-        }
-        else if (OrderOfSort == SortOrder.Descending)
+            int compareResult;
+            ListViewItem listviewX, listviewY;
+
+            // Cast the objects to be compared to ListViewItem objects
+            listviewX = (ListViewItem)x;
+            listviewY = (ListViewItem)y;
+
+            // Compare the two items
+            compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
+
+            // Calculate correct return value based on object comparison
+            if (OrderOfSort == SortOrder.Ascending)
+            {
+                // Ascending sort is selected, return normal result of compare operation
+                return compareResult;
+            }
+            else if (OrderOfSort == SortOrder.Descending)
+            {
+                // Descending sort is selected, return negative result of compare operation
+                return (-compareResult);
+            }
+            else
+            {
+                // Return '0' to indicate they are equal
+                return 0;
+            }
+        }else // perform an integer sort
         {
-            // Descending sort is selected, return negative result of compare operation
-            return (-compareResult);
-        }
-        else
-        {
-            // Return '0' to indicate they are equal
-            return 0;
+            int compareResult;
+            ListViewItem listviewX, listviewY;
+
+            // Cast the objects to be compared to ListViewItem objects
+            listviewX = (ListViewItem)x;
+            listviewY = (ListViewItem)y;
+
+            // Convert the text to int
+            Int64 numX = Convert.ToInt64(listviewX.SubItems[ColumnToSort].Text);
+            Int64 numY = Convert.ToInt64(listviewY.SubItems[ColumnToSort].Text);
+
+            // Compare the two items
+            compareResult = numX.CompareTo(numY); ;
+
+            // Calculate correct return value based on object comparison
+            if (OrderOfSort == SortOrder.Ascending)
+            {
+                // Ascending sort is selected, return normal result of compare operation
+                return compareResult;
+            }
+            else if (OrderOfSort == SortOrder.Descending)
+            {
+                // Descending sort is selected, return negative result of compare operation
+                return (-compareResult);
+            }
+            else
+            {
+                // Return '0' to indicate they are equal
+                return 0;
+            }
         }
     }
 

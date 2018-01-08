@@ -93,6 +93,8 @@ namespace fileSystemCrawler
                 // Set the column number that is to be sorted; default to ascending.
                 lvwColumnSorter.SortColumn = e.Column;
                 lvwColumnSorter.Order = SortOrder.Ascending;
+                if (lvwColumnSorter.SortColumn == 5) lvwColumnSorter.intSort = 1; // sort based on size of int
+                else lvwColumnSorter.intSort = 0; // sort strings in lexicographic order
             }
 
             // Perform the sort with these new sort options.
