@@ -109,6 +109,9 @@ namespace fileSystemCrawler
             {
                 var url = new Uri(hit.SubItem.Text);
                 //OpenFolder(Convert.ToString(url)); // Doesn't work on paths that look like \\etc.
+            }else if (hit.SubItem != null && hit.SubItem != hit.Item.SubItems[0])
+            {
+                return;
             }
         }
 
@@ -130,8 +133,16 @@ namespace fileSystemCrawler
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string path = listView1.SelectedItems[0].SubItems[0].Text;
-            Clipboard.SetText(path);
+            try
+            {
+                string path = listView1.SelectedItems[0].SubItems[0].Text; // get the full file path
+                string path2 = Directory.GetParent(path).FullName; // find the path of the file's parent directory
+                Clipboard.SetText(path2); // copy the parent directory path to the clipboard
+            }
+            catch (Exception)
+            {
+                return;
+            }
         }
     }
 }
