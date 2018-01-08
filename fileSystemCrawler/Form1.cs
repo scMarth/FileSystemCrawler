@@ -54,10 +54,15 @@ namespace fileSystemCrawler
             foreach (string file in files)
             {
                 ListViewItem lvi = new ListViewItem(file);
-                lvi.SubItems.Add(File.GetCreationTime(file).ToString());
-                lvi.SubItems.Add(File.GetCreationTimeUtc(file).ToString());
-                lvi.SubItems.Add(File.GetLastWriteTime(file).ToString());
-                lvi.SubItems.Add(File.GetLastWriteTimeUtc(file).ToString());
+                lvi.SubItems.Add(File.GetCreationTime(file).ToString()); // date created
+                lvi.SubItems.Add(File.GetCreationTimeUtc(file).ToString()); // date created UTC
+                lvi.SubItems.Add(File.GetLastWriteTime(file).ToString()); // date modified
+                lvi.SubItems.Add(File.GetLastWriteTimeUtc(file).ToString()); // date modified UTC
+
+                FileInfo fi = new FileInfo(file);
+                lvi.SubItems.Add(fi.Length.ToString()); //file size
+
+                lvi.SubItems.Add(Path.GetExtension(file)); // file extension
 
                 listView1.Items.Add(lvi);
             }
@@ -136,12 +141,26 @@ namespace fileSystemCrawler
             try
             {
                 string path = listView1.SelectedItems[0].SubItems[0].Text; // get the full file path
-                string path2 = Directory.GetParent(path).FullName; // find the path of the file's parent directory
-                Clipboard.SetText(path2); // copy the parent directory path to the clipboard
+                path = Directory.GetParent(path).FullName; // find the path of the file's parent directory
+                Clipboard.SetText(path); // copy the parent directory path to the clipboard
             }
             catch (Exception)
             {
-                return;
+                MessageBox.Show("Error: Could not copy the file's path.");
+            }
+        }
+
+        private void openFileLocationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string path = listView1.SelectedItems[0].SubItems[0].Text; // get the full file path
+                path = Directory.GetParent(path).FullName; // find the path of the file's parent directory
+                Process.Start("explorer.exe", path); // open the parent directory path in the file explorer
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error: Could not open the file's location.");
             }
         }
     }
