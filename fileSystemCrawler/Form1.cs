@@ -60,6 +60,10 @@ namespace fileSystemCrawler
             // print filenames
             foreach (string file in files)
             {
+                // exclude files that we want to ignore
+                string fileExt = Path.GetExtension(file);
+                if (isInIgnoreSet(fileExt)) continue; // skip
+
                 ListViewItem lvi = new ListViewItem(file);
                 lvi.SubItems.Add(File.GetCreationTime(file).ToString()); // date created
                 lvi.SubItems.Add(File.GetCreationTimeUtc(file).ToString()); // date created UTC
@@ -68,8 +72,7 @@ namespace fileSystemCrawler
 
                 FileInfo fi = new FileInfo(file);
                 lvi.SubItems.Add(fi.Length.ToString()); //file size
-
-                lvi.SubItems.Add(Path.GetExtension(file)); // file extension
+                lvi.SubItems.Add(fileExt); // file extension
 
                 listView1.Items.Add(lvi);
             }
@@ -77,6 +80,20 @@ namespace fileSystemCrawler
             foreach (string folder in folders)
             {
                 visitDirectory(folder);
+            }
+        }
+
+        // returns true of the string 'fileExt' is a file extension that we want to ignore, return false otherwise
+        private bool isInIgnoreSet(string fileExt)
+        {
+            switch (fileExt)
+            {
+                case ".cpg": return true;
+                case ".dbf": return true;
+                case ".prj": return true;
+                case ".sbn": return true;
+                case ".sbx": return true;
+                default: return false;
             }
         }
 
