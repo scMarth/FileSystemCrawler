@@ -149,8 +149,8 @@ namespace fileSystemCrawler
             try
             {
                 string path = listView1.SelectedItems[0].SubItems[0].Text; // get the full file path
-                path = Directory.GetParent(path).FullName; // find the path of the file's parent directory
-                Process.Start("explorer.exe", path); // open the parent directory path in the file explorer
+                string argument = "/select, \"" + path + "\"";
+                Process.Start("explorer.exe", argument); // open the parent directory path in the file explorer
             }
             catch (Exception)
             {
