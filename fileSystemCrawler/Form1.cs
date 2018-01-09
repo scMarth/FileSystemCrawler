@@ -25,8 +25,15 @@ namespace fileSystemCrawler
             // to the ListView control.
             lvwColumnSorter = new ListViewColumnSorter();
             this.listView1.ListViewItemSorter = lvwColumnSorter;
+
+            // add new handler for left / right clicks
+            this.listView1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnListViewMouseUp);
+
+            // Select the item and subitems when selection is made.
+            listView1.FullRowSelect = true;
         }
 
+        // open the path if the "Select Folder" button is clicked
         private void button1_Click(object sender, EventArgs e)
         {
             // open the path that the user selected in the browser dialog
@@ -73,6 +80,7 @@ namespace fileSystemCrawler
             }
         }
 
+        // logic for sorting columns if the column header is clicked
         private void colClick(object sender, ColumnClickEventArgs e)
         {
             // Determine if clicked column is already the column that is being sorted.
@@ -109,35 +117,18 @@ namespace fileSystemCrawler
             else listView1.Cursor = Cursors.Default;
         }
 
-        private void listView1_MouseUp(object sender, MouseEventArgs e)
+        // if the user right clicks, select that item
+        private void OnListViewMouseUp(object sender, MouseEventArgs e)
         {
-            var hit = listView1.HitTest(e.Location);
-            if (hit.SubItem != null && hit.SubItem == hit.Item.SubItems[0])
+            ListView listView = sender as ListView;
+            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Left)
             {
-                var url = new Uri(hit.SubItem.Text);
-                //OpenFolder(Convert.ToString(url)); // Doesn't work on paths that look like \\etc.
-            }else if (hit.SubItem != null && hit.SubItem != hit.Item.SubItems[0])
-            {
-                return;
+                ListViewItem item = listView.GetItemAt(e.X, e.Y);
+                if (item != null) item.Selected = true;
             }
         }
 
-
-        private void OpenFolder(string folderPath)
-        {
-            if (Directory.Exists(folderPath))
-            {
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    Arguments = folderPath,
-                    FileName = "explorer.exe"
-                };
-            }else
-            {
-                MessageBox.Show(string.Format("{0} Directory does not exist!", folderPath));
-            }
-        }
-
+        // handler for "Copy Parent Folder Path" option in the context menu strip
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -148,10 +139,11 @@ namespace fileSystemCrawler
             }
             catch (Exception)
             {
-                MessageBox.Show("Error: Could not copy the file's path.");
+                MessageBox.Show("Error: Could not copy the parent folder's path.");
             }
         }
 
+        // handler for "Open File Location" option in the context menu strip
         private void openFileLocationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -217,14 +209,11 @@ namespace fileSystemCrawler
                     // hide the progress bar
                     progressBar1.Visible = false;
                     MessageBox.Show(string.Format("Exported {0} entries.", listView1.Items.Count.ToString()));
-
                 }
             }else
             {
                 MessageBox.Show("Error: No entries to be written, aborting.");
             }
-
-
         }
 
         private void rescaleResetProgressBar()
@@ -240,12 +229,27 @@ namespace fileSystemCrawler
             progressBar1.Width = thirds;
         }
 
+        // append the string 'str' to file 'filename'
         private void appendToFile(string filename, string str)
         {
             using (System.IO.StreamWriter file =
                 new System.IO.StreamWriter(filename, true))
             {
                 file.Write(str);
+            }
+        }
+
+        // handler for "Copy File Path" option in the context menu strip
+        private void copyFilePathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string path = listView1.SelectedItems[0].SubItems[0].Text; // get the full file path
+                Clipboard.SetText(path); // copy the parent directory path to the clipboard
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error: Could not copy the file's path.");
             }
         }
     }
